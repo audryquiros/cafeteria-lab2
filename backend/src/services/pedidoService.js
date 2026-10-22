@@ -3,7 +3,13 @@ const db = require("../db");
 
 const IMPUESTO = 0.13;
 
-// Crear un pedido y descontar los insumos en una transacción.
+// Redondear importes monetarios a dos decimales.
+function redondear(valor) {
+  return Math.round((valor + Number.EPSILON) * 100) / 100;
+}
+
+// Crear un pedido, aplicar combos y descontar insumos
+// dentro de una sola transacción.
 function crearPedido({ metodo_pago, productos }) {
   const registrarPedido = db.transaction(() => {
     if (!Array.isArray(productos) || productos.length === 0) {
@@ -38,8 +44,9 @@ function crearPedido({ metodo_pago, productos }) {
     `);
 
     const guardarPedido = db.prepare(`
-      INSERT INTO pedidos (metodo_pago, subtotal, impuesto, total)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO pedidos
+        (metodo_pago, subtotal, descuento, impuesto, total)
+      VALUES (?, ?, ?, ?, ?)
     `);
 
     const guardarDetalle = db.prepare(`
@@ -48,7 +55,6 @@ function crearPedido({ metodo_pago, productos }) {
       VALUES (?, ?, ?, ?)
     `);
 
-    // Registrar los insumos consumidos por cada pedido.
     const guardarConsumoInsumo = db.prepare(`
       INSERT INTO pedido_insumos (pedido_id, insumo_id, cantidad)
       VALUES (?, ?, ?)
@@ -56,7 +62,9 @@ function crearPedido({ metodo_pago, productos }) {
 
     const lineas = [];
     const necesidades = new Map();
+    const cantidadesDisponibles = new Map();
 
+    // Validar productos y calcular necesidades de inventario.
     for (const item of productos) {
       const productoId = Number(item.producto_id);
       const cantidad = Number(item.cantidad);
@@ -115,26 +123,136 @@ function crearPedido({ metodo_pago, productos }) {
         nombre: producto.nombre,
         cantidad,
         precio_unitario: producto.precio,
-        importe: producto.precio * cantidad,
+        importe: redondear(producto.precio * cantidad),
+      });
+
+      cantidadesDisponibles.set(
+        producto.id,
+        (cantidadesDisponibles.get(producto.id) || 0) + cantidad
+      );
+    }
+
+    // Subtotal antes de aplicar descuentos.
+    const subtotalOriginal = redondear(
+      lineas.reduce((suma, linea) => suma + linea.importe, 0)
+    );
+
+    // Buscar combos activos y sus productos configurados.
+    const combos = db.prepare(`
+      SELECT id, nombre, descuento_porcentaje
+      FROM combos
+      WHERE activo = 1
+      ORDER BY id ASC
+    `).all();
+
+    const obtenerComponentesCombo = db.prepare(`
+      SELECT
+        ci.producto_id,
+        ci.cantidad,
+        p.nombre AS producto,
+        p.precio
+      FROM combo_items ci
+      INNER JOIN productos p ON p.id = ci.producto_id
+      WHERE ci.combo_id = ?
+      ORDER BY ci.producto_id
+    `);
+
+    let descuento = 0;
+    const combosAplicados = [];
+
+    // Evitar usar las mismas unidades en dos combos distintos.
+    // El orden de aplicación es el ID ascendente del combo.
+    for (const combo of combos) {
+      const componentes = obtenerComponentesCombo.all(combo.id);
+
+      if (componentes.length < 2) {
+        continue;
+      }
+
+      let combinacionesCompletas = Infinity;
+
+      for (const componente of componentes) {
+        const disponibles =
+          cantidadesDisponibles.get(componente.producto_id) || 0;
+
+        const posibles = Math.floor(
+          disponibles / componente.cantidad
+        );
+
+        combinacionesCompletas = Math.min(
+          combinacionesCompletas,
+          posibles
+        );
+      }
+
+      if (
+        !Number.isFinite(combinacionesCompletas) ||
+        combinacionesCompletas <= 0
+      ) {
+        continue;
+      }
+
+      const importeCombo = componentes.reduce(
+        (suma, componente) =>
+          suma + componente.precio * componente.cantidad,
+        0
+      );
+
+      const descuentoCombo = redondear(
+        importeCombo *
+          (combo.descuento_porcentaje / 100) *
+          combinacionesCompletas
+      );
+
+      descuento = redondear(descuento + descuentoCombo);
+
+      // Reservar las unidades utilizadas por este combo.
+      for (const componente of componentes) {
+        const restantes =
+          (cantidadesDisponibles.get(componente.producto_id) || 0) -
+          componente.cantidad * combinacionesCompletas;
+
+        cantidadesDisponibles.set(
+          componente.producto_id,
+          restantes
+        );
+      }
+
+      combosAplicados.push({
+        combo_id: combo.id,
+        nombre: combo.nombre,
+        cantidad: combinacionesCompletas,
+        descuento_porcentaje: combo.descuento_porcentaje,
+        descuento: descuentoCombo,
       });
     }
 
-    const subtotal = Math.round(
-      lineas.reduce((suma, linea) => suma + linea.importe, 0) * 100
-    ) / 100;
+    // Guardar subtotal neto: después del descuento.
+    // El impuesto se calcula sobre el subtotal neto.
+    if (descuento > subtotalOriginal) {
+      const error = new Error(
+        "El descuento calculado supera el subtotal del pedido"
+      );
+      error.status = 409;
+      throw error;
+    }
 
-    const impuesto = Math.round(subtotal * IMPUESTO * 100) / 100;
-    const total = Math.round((subtotal + impuesto) * 100) / 100;
+    const subtotal = redondear(subtotalOriginal - descuento);
+    const impuesto = redondear(subtotal * IMPUESTO);
+    const total = redondear(subtotal + impuesto);
 
     const pedido = guardarPedido.run(
       metodo_pago,
       subtotal,
+      descuento,
       impuesto,
       total
     );
 
     const pedidoId = Number(pedido.lastInsertRowid);
 
+    // Guardar las líneas originales: el descuento se registra
+    // por separado en pedidos.descuento.
     for (const linea of lineas) {
       guardarDetalle.run(
         pedidoId,
@@ -144,7 +262,7 @@ function crearPedido({ metodo_pago, productos }) {
       );
     }
 
-    // Descontar y registrar cada consumo dentro de la misma transacción.
+    // Descontar y registrar el consumo histórico de insumos.
     for (const [insumoId, cantidadRequerida] of necesidades) {
       const resultado = descontarInsumo.run(
         cantidadRequerida,
@@ -170,11 +288,14 @@ function crearPedido({ metodo_pago, productos }) {
     return {
       id: pedidoId,
       metodo_pago,
+      subtotal_original: subtotalOriginal,
+      descuento,
       subtotal,
       impuesto,
       total,
       estado: "confirmado",
       productos: lineas,
+      combos_aplicados: combosAplicados,
     };
   });
 
@@ -184,7 +305,9 @@ function crearPedido({ metodo_pago, productos }) {
 // Consultar todos los pedidos con sus detalles.
 function listarPedidos() {
   const pedidos = db.prepare(`
-    SELECT id, fecha, metodo_pago, subtotal, impuesto, total, estado
+    SELECT
+      id, fecha, metodo_pago, subtotal,
+      descuento, impuesto, total, estado
     FROM pedidos
     ORDER BY id DESC
   `).all();
@@ -212,7 +335,9 @@ function listarPedidos() {
 // Consultar un pedido por su ID.
 function obtenerPedidoPorId(id) {
   const pedido = db.prepare(`
-    SELECT id, fecha, metodo_pago, subtotal, impuesto, total, estado
+    SELECT
+      id, fecha, metodo_pago, subtotal,
+      descuento, impuesto, total, estado
     FROM pedidos
     WHERE id = ?
   `).get(id);
@@ -281,7 +406,6 @@ function anularPedido(id) {
       WHERE pedido_id = ?
     `).all(id);
 
-    // No restaurar cantidades inventadas para pedidos antiguos.
     if (consumos.length === 0) {
       const error = new Error(
         "Este pedido no tiene un registro histórico de insumos y no puede anularse automáticamente con seguridad"
@@ -362,6 +486,7 @@ function obtenerCierreCaja(fecha) {
       metodo_pago,
       COUNT(*) AS cantidad_pedidos,
       ROUND(SUM(subtotal), 2) AS subtotal,
+      ROUND(SUM(descuento), 2) AS descuento,
       ROUND(SUM(impuesto), 2) AS impuesto,
       ROUND(SUM(total), 2) AS total
     FROM pedidos
@@ -375,6 +500,7 @@ function obtenerCierreCaja(fecha) {
     SELECT
       COUNT(*) AS cantidad_pedidos,
       ROUND(COALESCE(SUM(subtotal), 0), 2) AS subtotal,
+      ROUND(COALESCE(SUM(descuento), 0), 2) AS descuento,
       ROUND(COALESCE(SUM(impuesto), 0), 2) AS impuesto,
       ROUND(COALESCE(SUM(total), 0), 2) AS total
     FROM pedidos
