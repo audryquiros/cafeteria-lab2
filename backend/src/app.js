@@ -13,6 +13,7 @@ const inventarioRoutes = require("./routes/inventarioRoutes");
 const recetaRoutes = require("./routes/recetaRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
 const resumenRoutes = require("./routes/resumenRoutes");
+const comboRoutes = require("./routes/comboRoutes");
 
 // Middlewares
 app.use(cors());
@@ -24,6 +25,7 @@ app.use("/api/inventario", inventarioRoutes);
 app.use("/api/recetas", recetaRoutes);
 app.use("/api/pedidos", pedidoRoutes);
 app.use("/api/resumen", resumenRoutes);
+app.use("/api/combos", comboRoutes);
 
 // Ruta inicial.
 app.get("/", (req, res) => {
