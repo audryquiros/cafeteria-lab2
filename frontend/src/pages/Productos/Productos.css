@@ -1,0 +1,541 @@
+
+.productos-page {
+  width: 100%;
+  min-width: 0;
+  color: var(--color-text, #453866);
+}
+
+.productos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.productos-eyebrow {
+  color: var(--color-accent, #9471df);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.productos-header h1 {
+  margin: 12px 0 8px;
+  font-size: clamp(26px, 3vw, 36px);
+}
+
+.productos-header p {
+  margin: 0;
+  color: var(--color-text-muted, #77718d);
+}
+
+.productos-btn-secundario,
+.productos-error button {
+  padding: 12px 18px;
+  border: 1px solid #e6dff1;
+  border-radius: 12px;
+  background: white;
+  color: #453866;
+  cursor: pointer;
+}
+
+.productos-btn-secundario:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.productos-filtros {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) minmax(150px, 1fr) minmax(180px, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.productos-filtros input,
+.productos-filtros select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #e6dff1;
+  border-radius: 12px;
+  background: white;
+  color: #453866;
+  font: inherit;
+}
+
+.productos-filtros input:focus,
+.productos-filtros select:focus {
+  outline: 2px solid #c6b0f0;
+  outline-offset: 1px;
+}
+
+.productos-contador {
+  margin: 0 0 14px;
+  color: #77718d;
+  font-size: 14px;
+}
+
+.productos-tabla-contenedor {
+  overflow-x: auto;
+  border: 1px solid #ebe4f4;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 6px 22px rgb(65 48 97 / 5%);
+}
+
+.productos-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.productos-tabla th,
+.productos-tabla td {
+  padding: 17px 20px;
+  border-bottom: 1px solid #f0ebf6;
+}
+
+.productos-tabla th {
+  background: #faf8fd;
+  color: #77718d;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.productos-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.productos-tabla tbody tr:hover {
+  background: #fcfaff;
+}
+
+.productos-tabla td strong,
+.productos-tabla td small {
+  display: block;
+}
+
+.productos-tabla td small {
+  margin-top: 5px;
+  color: #918aa5;
+  font-size: 12px;
+}
+
+.productos-precio {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.productos-estado {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.productos-estado.activo {
+  background: #e5f5eb;
+  color: #26734a;
+}
+
+.productos-estado.inactivo {
+  background: #fce9ed;
+  color: #a43e56;
+}
+
+.productos-mensaje,
+.productos-vacio,
+.productos-error {
+  padding: 22px;
+  border: 1px solid #ebe4f4;
+  border-radius: 14px;
+  background: white;
+}
+
+.productos-error {
+  color: #a43e56;
+}
+
+@media (max-width: 800px) {
+  .productos-filtros {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .productos-filtros input {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .productos-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .productos-filtros {
+    grid-template-columns: 1fr;
+  }
+
+  .productos-filtros input {
+    grid-column: auto;
+  }
+
+  .productos-tabla th,
+  .productos-tabla td {
+    padding: 13px 12px;
+  }
+}
+
+.productos-acciones-header,
+.productos-acciones-fila,
+.productos-modal-acciones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.productos-acciones-header {
+  flex-wrap: wrap;
+}
+
+.productos-btn-principal {
+  padding: 12px 18px;
+  border: 1px solid #8f6bd5;
+  border-radius: 12px;
+  background: #9471df;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.productos-btn-principal:hover {
+  background: #7f5cc7;
+}
+
+.productos-acciones-fila {
+  flex-wrap: wrap;
+}
+
+.productos-acciones-fila button {
+  padding: 7px 10px;
+  border: 1px solid #e6dff1;
+  border-radius: 8px;
+  background: white;
+  color: #51416f;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.productos-acciones-fila button:hover {
+  background: #f6f1fc;
+}
+
+.productos-acciones-fila .productos-btn-eliminar {
+  color: #a43e56;
+  border-color: #f0d4dc;
+}
+
+.productos-error {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.productos-error button {
+  flex-shrink: 0;
+}
+
+.productos-modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: rgb(35 25 51 / 45%);
+  backdrop-filter: blur(4px);
+}
+
+.productos-modal {
+  box-sizing: border-box;
+  width: min(100%, 500px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 26px;
+  border: 1px solid #ebe4f4;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgb(35 25 51 / 20%);
+}
+
+.productos-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.productos-modal-header h2 {
+  margin: 8px 0 0;
+  color: #453866;
+}
+
+.productos-modal-cerrar {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e6dff1;
+  border-radius: 10px;
+  background: white;
+  color: #453866;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.productos-modal form {
+  display: grid;
+  gap: 18px;
+}
+
+.productos-modal form label {
+  display: grid;
+  gap: 8px;
+  color: #51416f;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.productos-modal form input,
+.productos-modal form select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #e6dff1;
+  border-radius: 10px;
+  background: white;
+  color: #453866;
+  font: inherit;
+}
+
+.productos-modal form input:focus,
+.productos-modal form select:focus {
+  outline: 2px solid #c6b0f0;
+  outline-offset: 1px;
+}
+
+.productos-modal-acciones {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+@media (max-width: 520px) {
+  .productos-acciones-header {
+    width: 100%;
+  }
+
+  .productos-modal {
+    padding: 20px;
+  }
+
+  .productos-acciones-fila {
+    min-width: 180px;
+  }
+}
+
+/* Desplegables del formulario de productos */
+.productos-modal form select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 44px 12px 14px;
+  border: 1px solid #e2d7f3;
+  border-radius: 12px;
+  background-color: #fcfaff;
+  color: #453866;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239471df' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.productos-modal form select:hover {
+  border-color: #bca4e9;
+  background-color: #f8f4ff;
+}
+
+.productos-modal form select:focus {
+  outline: none;
+  border-color: #a783ed;
+  box-shadow: 0 0 0 4px rgb(167 131 237 / 18%);
+}
+
+.productos-modal form select option {
+  background-color: #ffffff;
+  color: #453866;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 10px;
+}
+
+.productos-modal form select option:checked {
+  background-color: #e9defb;
+  color: #453866;
+}
+
+/* Alineación uniforme de iconos y textos */
+.productos-btn-principal,
+.productos-btn-secundario,
+.productos-error button,
+.productos-acciones-fila button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.productos-btn-principal,
+.productos-btn-secundario {
+  min-height: 44px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.productos-btn-principal svg,
+.productos-btn-secundario svg,
+.productos-acciones-fila button svg,
+.productos-error button svg {
+  display: block;
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+}
+
+/* Botones de acciones de cada producto */
+.productos-acciones-fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.productos-acciones-fila button {
+  min-height: 38px;
+  padding: 8px 12px;
+  gap: 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.productos-acciones-fila button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Botón para cerrar el formulario */
+.productos-modal-cerrar {
+  display: inline-flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.productos-modal-cerrar svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+/* Acciones del formulario */
+.productos-modal-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.productos-modal-acciones button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 11px 18px;
+  line-height: 1.4;
+}
+
+.productos-modal-acciones button svg {
+  display: block;
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+}
+
+/* Evitar que los botones se deformen al reducir la pantalla */
+@media (max-width: 520px) {
+  .productos-acciones-fila {
+    gap: 8px;
+  }
+
+  .productos-acciones-fila button {
+    padding: 8px 10px;
+  }
+
+  .productos-modal-acciones {
+    gap: 8px;
+  }
+}
+
+/* Ajustar el ancho de las columnas de la tabla */
+.productos-tabla {
+  table-layout: auto;
+  width: 100%;
+}
+
+.productos-tabla th:last-child,
+.productos-tabla td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.productos-acciones-fila {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: max-content;
+}
+
+.productos-acciones-fila button {
+  flex: 0 0 auto;
+}
+
+/* Mantener el desplazamiento horizontal en pantallas pequeñas */
+@media (max-width: 900px) {
+  .productos-tabla {
+    min-width: 850px;
+  }
+}

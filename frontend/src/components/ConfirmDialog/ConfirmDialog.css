@@ -1,0 +1,150 @@
+
+.confirm-dialog-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(39 29 55 / 48%);
+  backdrop-filter: blur(5px);
+  animation: confirm-fondo-entrada 0.18s ease-out;
+}
+
+.confirm-dialog {
+  box-sizing: border-box;
+  width: min(100%, 430px);
+  padding: 30px;
+  border: 1px solid #ebe4f4;
+  border-radius: 22px;
+  background: #fff;
+  color: #453866;
+  text-align: center;
+  box-shadow: 0 24px 70px rgb(39 29 55 / 22%);
+  animation: confirm-dialog-entrada 0.2s ease-out;
+}
+
+.confirm-dialog-icono {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 18px;
+  border-radius: 18px;
+  background: #eee5ff;
+  color: #9471df;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.confirm-dialog-icono.peligro {
+  background: #fce9ed;
+  color: #b84964;
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 12px;
+  color: #453866;
+  font-size: 23px;
+}
+
+.confirm-dialog p {
+  margin: 0;
+  color: #77718d;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.confirm-dialog-acciones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.confirm-dialog-acciones button {
+  min-height: 46px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+}
+
+.confirm-dialog-acciones button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.confirm-dialog-acciones button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.confirm-dialog-cancelar {
+  border: 1px solid #e6dff1;
+  background: #fff;
+  color: #51416f;
+}
+
+.confirm-dialog-cancelar:hover:not(:disabled) {
+  background: #f8f4ff;
+}
+
+.confirm-dialog-confirmar {
+  border: 1px solid #9471df;
+  background: #9471df;
+  color: #fff;
+}
+
+.confirm-dialog-confirmar:hover:not(:disabled) {
+  background: #7f5cc7;
+}
+
+.confirm-dialog-confirmar.peligro {
+  border-color: #b84964;
+  background: #b84964;
+}
+
+.confirm-dialog-confirmar.peligro:hover:not(:disabled) {
+  background: #9f3853;
+}
+
+@keyframes confirm-fondo-entrada {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirm-dialog-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .confirm-dialog {
+    padding: 24px 20px;
+  }
+
+  .confirm-dialog-acciones {
+    flex-direction: column-reverse;
+  }
+
+  .confirm-dialog-acciones button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog-fondo,
+  .confirm-dialog {
+    animation: none;
+  }
+}

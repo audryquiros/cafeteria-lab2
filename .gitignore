@@ -1,0 +1,18 @@
+﻿node_modules/
+.env
+.env.*
+!.env.example
+dist/
+build/
+coverage/
+*.log
+
+# Base de datos SQLite
+*.db
+*.db-shm
+*.db-wal
+
+# Archivos del sistema y del editor
+.DS_Store
+Thumbs.db
+.vscode/

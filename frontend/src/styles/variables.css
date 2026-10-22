@@ -1,0 +1,43 @@
+
+:root {
+  /* Colores principales */
+  --color-primary: #9275D8;
+  --color-primary-hover: #7E60C4;
+  --color-primary-light: #DCD0F6;
+  --color-primary-soft: #F1EAFB;
+  --color-primary-dark: #493B68;
+
+  /* Colores secundarios */
+  --color-pink: #F2CADB;
+  --color-blue: #C7DDF5;
+
+  /* Superficies */
+  --color-background: #F8F7FC;
+  --color-surface: #FFFFFF;
+  --color-border: #E8E2F1;
+
+  /* Texto */
+  --color-text: #39344A;
+  --color-text-muted: #77718B;
+  --color-text-light: #FFFFFF;
+
+  /* Estados */
+  --color-success: #DCEFE4;
+  --color-success-text: #32684B;
+  --color-warning: #FFF0D6;
+  --color-warning-text: #8A5A18;
+  --color-danger: #F9E0E5;
+  --color-danger-text: #963F55;
+  --color-info: #E2EDFA;
+  --color-info-text: #365D88;
+
+  /* Diseño */
+  --font-family: "Inter", sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --shadow-card: 0 4px 16px rgba(73, 59, 104, 0.06);
+
+  --transition: 0.2s ease;
+}

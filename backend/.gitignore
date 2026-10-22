@@ -1,0 +1,5 @@
+node_modules/
+.env
+cafeteria.db
+cafeteria.db-shm
+cafeteria.db-wal

@@ -1,0 +1,239 @@
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  padding: 28px 18px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--color-primary-dark);
+  color: var(--color-text-light);
+  transition: var(--transition);
+  overscroll-behavior: contain;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+  margin-bottom: 38px;
+}
+
+.navbar-logo {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--color-primary);
+  font-size: 23px;
+}
+
+.navbar-brand h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.navbar-brand p {
+  margin: 4px 0 0;
+  color: #DCD0F6;
+  font-size: 11px;
+}
+
+.navbar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navbar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: var(--radius-md);
+  color: #E6DFF4;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.navbar-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+}
+
+.navbar-link.active {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.navbar-footer {
+  margin-top: auto;
+  padding: 18px 10px 0;
+  color: #C7B9E5;
+  font-size: 12px;
+}
+
+.navbar-link svg {
+  flex-shrink: 0;
+  transition:
+    transform var(--transition),
+    color var(--transition);
+}
+
+.navbar-link:hover svg {
+  transform: translateX(2px);
+}
+
+.navbar-link.active svg,
+.navbar-logo svg {
+  color: #FFFFFF;
+}
+
+/* Encabezado móvil */
+.mobile-header {
+  display: none;
+}
+
+.hamburger-button,
+.navbar-close {
+  border: none;
+  cursor: pointer;
+  color: #FFFFFF;
+  background: transparent;
+}
+
+.navbar-close {
+  display: none;
+}
+
+.navbar-overlay {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 68px;
+    padding: 12px 18px;
+    background: var(--color-primary-dark);
+    color: #FFFFFF;
+    box-shadow: 0 3px 12px rgba(73, 59, 104, 0.12);
+  }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .mobile-logo {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--color-primary);
+  }
+
+  .hamburger-button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+
+  .hamburger-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1003;
+    width: min(290px, 85vw);
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 25px 18px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition:
+      transform 0.25s ease,
+      visibility 0.25s ease;
+    box-shadow: none;
+  }
+
+  .navbar.navbar-open {
+    transform: translateX(0);
+    visibility: visible;
+    box-shadow: 12px 0 35px rgba(35, 24, 58, 0.2);
+  }
+
+  .navbar-brand {
+    margin-bottom: 30px;
+  }
+
+  .navbar-close {
+    display: grid;
+    flex: 0 0 36px;
+    place-items: center;
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .navbar-link {
+    flex: initial;
+    justify-content: flex-start;
+  }
+
+  .navbar-footer {
+    display: block;
+  }
+
+  .navbar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1002;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    background: rgba(35, 24, 58, 0.38);
+    cursor: pointer;
+  }
+}

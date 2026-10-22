@@ -1,0 +1,188 @@
+
+.notificacion {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: min(540px, calc(100vw - 32px));
+  padding: 19px 17px 22px;
+  overflow: hidden;
+  color: #493956;
+  background: #ffffff;
+  border: 1px solid #e9e0f1;
+  border-left: 4px solid #65a982;
+  border-radius: 20px;
+  box-shadow: 0 14px 42px rgb(49 31 66 / 16%);
+  animation: notificacion-entrada 0.24s ease-out;
+}
+
+.notificacion-exito {
+  border-left-color: #65a982;
+}
+
+.notificacion-aviso {
+  border-left-color: #d3a24e;
+}
+
+.notificacion-error {
+  border-left-color: #cf6976;
+}
+
+.notificacion-info {
+  border-left-color: #9473c1;
+}
+
+.notificacion-icono {
+  display: flex;
+  flex: 0 0 49px;
+  align-items: center;
+  justify-content: center;
+  width: 49px;
+  height: 49px;
+  color: #438a63;
+  background: #eaf7ee;
+  border-radius: 16px;
+}
+
+.notificacion-aviso .notificacion-icono {
+  color: #946b25;
+  background: #fff6e4;
+}
+
+.notificacion-error .notificacion-icono {
+  color: #ad4e5c;
+  background: #fff0f1;
+}
+
+.notificacion-info .notificacion-icono {
+  color: #7952a5;
+  background: #f0e8f8;
+}
+
+.notificacion-contenido {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.notificacion-contenido strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #40304f;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.notificacion-contenido p {
+  margin: 0;
+  color: #82758e;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.notificacion-cerrar {
+  display: inline-flex;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin: -5px -5px 0 0;
+  padding: 0;
+  color: #9586a2;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.notificacion-cerrar:hover {
+  color: #5f4775;
+  background: #f5effa;
+}
+
+.notificacion-progreso {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #9bceaa;
+  transform-origin: left;
+  animation-name: notificacion-tiempo;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.notificacion-aviso .notificacion-progreso {
+  background: #e6c77f;
+}
+
+.notificacion-error .notificacion-progreso {
+  background: #e6a0a8;
+}
+
+.notificacion-info .notificacion-progreso {
+  background: #bda5df;
+}
+
+@keyframes notificacion-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes notificacion-tiempo {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .notificacion {
+    top: 12px;
+    right: 12px;
+    width: calc(100vw - 24px);
+    gap: 11px;
+    padding: 15px 13px 19px;
+    border-radius: 16px;
+  }
+
+  .notificacion-icono {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .notificacion-contenido strong {
+    font-size: 14px;
+  }
+
+  .notificacion-contenido p {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notificacion,
+  .notificacion-progreso {
+    animation-duration: 0.01ms !important;
+  }
+}
